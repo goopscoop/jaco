@@ -55,14 +55,22 @@ var createRiver = function( mapArr, tileSet, size ){
   var row = init.row;
   var col = init.col;
   var toBuild = true;
-  var direction = 'south';
+  var direction = init.dir;
   mapArr[row].splice(col, 1, tileSet[3]);
 
   // itterates over the arrays, returning message 'fin' when it reaches an edge
   // ending the river
   while ( toBuild ) {
-    var hasMoved = moveOneRow( mapArr, tileSet[3], row, col, size, 0, direction )
-    console.log( hasMoved )
+
+    // keys in moveOneRow obj mapArr, add, previousRow, previousCol, size, dirToMove, direction
+    var hasMoved = moveOneRow({
+      mapArr: mapArr,
+      add: tileSet[3],
+      previousRow: row,
+      previousCol: col,
+      size: size,
+      dirToMove: moveWhichDirection(),
+      direction: direction })
     if ( hasMoved.msg === 'fin' ){
       toBuild = false;
     } else {
@@ -70,7 +78,6 @@ var createRiver = function( mapArr, tileSet, size ){
       if ( hasMoved.dir === 'east' ) {
         col++;
       } else if ( hasMoved.dir === 'south' ){
-        console.log(row)
         row++;
       } else if ( hasMoved.dir === 'west' ){
         col--;
@@ -81,35 +88,48 @@ var createRiver = function( mapArr, tileSet, size ){
   }
 };
 
+var moveWhichDirection = function(previousDir){
+  return randomNum(4);
+}
+
 var initializeStartLocation = function(startingSide, size){
   if ( startingSide === 0 ) {
-    return { row: 0, col: randomNum( size ) };
+    return { row: 0, col: randomNum( size ), dir: 'south' };
   } else if( startingSide === 1 ){
-    return { row: randomNum( size ), col: ( size - 1 ) };
+    return { row: randomNum( size ), col: ( size - 1 ), dir: 'west' };
   } else if( startingSide === 2 ){
-    return { row: ( size - 1 ), col: randomNum(size) };
+    return { row: ( size - 1 ), col: randomNum(size), dir: 'north' };
   } else if( startingSide === 3 ){
-    return { row: randomNum(size), col: 0 };
+    return { row: randomNum(size), col: 0, dir: 'west' };
   }
 };
 
-// takes the map array, tile to add, and other args, and based on the dirToMove adds
+// takes and options object which includes the map array, tile to add, and other args, and based on the dirToMove adds
 // the tile to add to the appropriate place, returning an object with msg and the
 // direction moved. If cannot place element, returns an object with msg: fin signaling
 // that it's time to end the algorithm
-var moveOneRow = function( mapArr, add, previousRow, previousCol, size, dirToMove, direction ){
-  if ( dirToMove === 0 && !edgeOfMapReached( previousRow, previousCol, size, direction ).north() ){
-    mapArr[(previousRow - 1)].splice( previousCol, 1, add );
+// mapArr, add, previousRow, previousCol, size, dirToMove, direction
+var moveOneRow = function( options ){
+  if ( options.dirToMove === 0 && !edgeOfMapReached( options.previousRow, options.previousCol, options.size, options.direction ).north() ){
+
+    options.mapArr[(options.previousRow - 1)].splice( options.previousCol, 1, options.add );
     return { msg: 'contiue', dir: 'north' }
-  } else if ( dirToMove === 1 && !edgeOfMapReached( previousRow, previousCol, size, direction ).east() ){
-    mapArr[ previousRow ].splice(( previousCol + 1 ), 1, add );
+
+  } else if ( options.dirToMove === 1 && !edgeOfMapReached( options.previousRow, options.previousCol, options.size, options.direction ).east() ){
+
+    options.mapArr[ options.previousRow ].splice(( options.previousCol + 1 ), 1, options.add );
     return { msg: 'contiue', dir: 'east' };
-  } else if ( dirToMove === 2 && !edgeOfMapReached( previousRow, previousCol, size, direction ).south() ){
-    mapArr[( previousRow + 1 )].splice( previousCol, 1, add );
+
+  } else if ( options.dirToMove === 2 && !edgeOfMapReached( options.previousRow, options.previousCol, options.size, options.direction ).south() ){
+
+    options.mapArr[( options.previousRow + 1 )].splice( options.previousCol, 1, options.add );
     return { msg: 'contiue', dir: 'south' };
-  } else if ( dirToMove === 3 && !edgeOfMapReached( previousRow, previousCol, size, direction ).west() ){
-    mapArr[(previousRow)].splice(( previousCol - 1 ), 1, add );
+
+  } else if ( options.dirToMove === 3 && !edgeOfMapReached( options.previousRow, options.previousCol, options.size, options.direction ).west() ){
+
+    options.mapArr[(options.previousRow)].splice(( options.previousCol - 1 ), 1, options.add );
     return { msg: 'contiue', dir: 'west' };
+
   } else {
     return { msg: 'fin' };
   }
