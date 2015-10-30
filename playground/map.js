@@ -55,13 +55,14 @@ var createRiver = function( mapArr, tileSet, size ){
   var row = init.row;
   var col = init.col;
   var toBuild = true;
-  var direction = init.dir;
+  var previousDirection = init.dir;
+  var favorDirection = init.numDir;
+  console.log(favorDirection)
   mapArr[row].splice(col, 1, tileSet[3]);
 
   // itterates over the arrays, returning message 'fin' when it reaches an edge
   // ending the river
   while ( toBuild ) {
-
     // keys in moveOneRow obj mapArr, add, previousRow, previousCol, size, dirToMove, direction
     var hasMoved = moveOneRow({
       mapArr: mapArr,
@@ -69,12 +70,12 @@ var createRiver = function( mapArr, tileSet, size ){
       previousRow: row,
       previousCol: col,
       size: size,
-      dirToMove: moveWhichDirection(),
-      direction: direction })
+      dirToMove: moveWhichDirection(previousDirection, favorDirection),
+      direction: previousDirection })
     if ( hasMoved.msg === 'fin' ){
       toBuild = false;
     } else {
-      direction = hasMoved.dir
+      previousDirection = hasMoved.dir
       if ( hasMoved.dir === 'east' ) {
         col++;
       } else if ( hasMoved.dir === 'south' ){
@@ -88,19 +89,54 @@ var createRiver = function( mapArr, tileSet, size ){
   }
 };
 
-var moveWhichDirection = function(previousDir){
-  return randomNum(4);
+var returnOpositeDirection = function(previousDir){
+  switch (previousDir) {
+    case 0 || 'north':
+      return {num: 2, dir: 'south'};
+    case 1 || 'east':
+      return {num: 3, dir: 'west'};
+    case 2 || 'south':
+      return {num: 0, dir: 'north'};
+    case 3 || 'west':
+      return {num: 1, dir: 'east'};
+  };
+}
+
+var moveWhichDirection = function(previousDir, favorDirection){
+  // 0 = N, 1 = E, 2 = S, 3 = W
+  var newDirection = randomNum(5);
+
+  if ( previousDir === 'south' && newDirection === 0 ){
+    moveWhichDirection(previousDir);
+  }
+  else if ( previousDir === 'west' && newDirection === 1 ){
+    moveWhichDirection(previousDir);
+  }
+  else if ( previousDir === 'north' && newDirection === 2 ){
+    moveWhichDirection(previousDir);
+  }
+  else if ( previousDir === 'east' && newDirection === 3 ){
+    moveWhichDirection(previousDir);
+  }
+  else if ( newDirection === 4 ){
+    return favorDirection;
+  }
+
+  return newDirection;
 }
 
 var initializeStartLocation = function(startingSide, size){
   if ( startingSide === 0 ) {
-    return { row: 0, col: randomNum( size ), dir: 'south' };
-  } else if( startingSide === 1 ){
-    return { row: randomNum( size ), col: ( size - 1 ), dir: 'west' };
-  } else if( startingSide === 2 ){
-    return { row: ( size - 1 ), col: randomNum(size), dir: 'north' };
-  } else if( startingSide === 3 ){
-    return { row: randomNum(size), col: 0, dir: 'west' };
+    return { row: 0, col: randomNum( size ), dir: 'south', numDir: 2 };
+  }
+  else if( startingSide === 1 ){
+    return { row: randomNum( size ), col: ( size - 1 ), dir: 'west', numDir: 3 };
+  }
+  else if( startingSide === 2 ){
+    return { row: ( size - 1 ), col: randomNum(size), dir: 'north', numDir: 0 };
+  }
+  else if( startingSide === 3 ){
+    return { row: randomNum(size), col: 0, dir: 'east', numDir: 1 };
   }
 };
 
@@ -111,26 +147,22 @@ var initializeStartLocation = function(startingSide, size){
 // mapArr, add, previousRow, previousCol, size, dirToMove, direction
 var moveOneRow = function( options ){
   if ( options.dirToMove === 0 && !edgeOfMapReached( options.previousRow, options.previousCol, options.size, options.direction ).north() ){
-
     options.mapArr[(options.previousRow - 1)].splice( options.previousCol, 1, options.add );
     return { msg: 'contiue', dir: 'north' }
-
-  } else if ( options.dirToMove === 1 && !edgeOfMapReached( options.previousRow, options.previousCol, options.size, options.direction ).east() ){
-
+  }
+  else if ( options.dirToMove === 1 && !edgeOfMapReached( options.previousRow, options.previousCol, options.size, options.direction ).east() ){
     options.mapArr[ options.previousRow ].splice(( options.previousCol + 1 ), 1, options.add );
     return { msg: 'contiue', dir: 'east' };
-
-  } else if ( options.dirToMove === 2 && !edgeOfMapReached( options.previousRow, options.previousCol, options.size, options.direction ).south() ){
-
+  }
+  else if ( options.dirToMove === 2 && !edgeOfMapReached( options.previousRow, options.previousCol, options.size, options.direction ).south() ){
     options.mapArr[( options.previousRow + 1 )].splice( options.previousCol, 1, options.add );
     return { msg: 'contiue', dir: 'south' };
-
-  } else if ( options.dirToMove === 3 && !edgeOfMapReached( options.previousRow, options.previousCol, options.size, options.direction ).west() ){
-
+  }
+  else if ( options.dirToMove === 3 && !edgeOfMapReached( options.previousRow, options.previousCol, options.size, options.direction ).west() ){
     options.mapArr[(options.previousRow)].splice(( options.previousCol - 1 ), 1, options.add );
     return { msg: 'contiue', dir: 'west' };
-
-  } else {
+  }
+  else {
     return { msg: 'fin' };
   }
 };
