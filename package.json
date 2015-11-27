@@ -1,33 +1,41 @@
 {
-  "devDependencies": {
-    "asar": "^0.7.2",
-    "babel-core": "^5.8.25",
-    "electron-prebuilt": "^0.32.2",
-    "electron-rebuild": "^1.0.1",
-    "fs-jetpack": "^0.7.0",
-    "gulp": "^3.9.0",
-    "gulp-babel": "^5.3.0",
-    "gulp-less": "^3.0.3",
-    "gulp-util": "^3.0.6",
-    "q": "^1.4.1",
-    "rollup": "^0.16.1",
-    "tree-kill": "^0.1.1",
-    "yargs": "^3.15.0"
-  },
-  "optionalDependencies": {
-    "appdmg": "^0.3.2",
-    "rcedit": "^0.3.0"
-  },
+  "name": "jaco",
+  "version": "1.0.0",
+  "description": "The best project in the world eva!",
+  "main": "main.js",
   "scripts": {
-    "postinstall": "node ./tasks/app_npm_install",
-    "app-install": "node ./tasks/app_npm_install",
-    "build": "./node_modules/.bin/gulp build",
-    "release": "./node_modules/.bin/gulp release --env=production",
-    "start": "node ./tasks/start",
-    "test": "node ./tasks/start --env=test"
+    "build": "webpack --config webpack/webpack.config.js",
+    "dev": "WEBPACK_ENV=dev webpack --config webpack/webpack.config.js --watch",
+    "start": "electron ./src/main.js"
+  },
+  "author": "S.C. Barrus",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goopscoop/jaco.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/goopscoop/jaco/issues"
+  },
+  "homepage": "https://github.com/goopscoop/jaco#readme",
+  "devDependencies": {
+    "babel-core": "^6.1.21",
+    "babel-loader": "^6.1.0",
+    "babel-preset-es2015": "^6.1.18",
+    "babel-preset-react": "^6.1.18",
+    "electron-prebuilt": "^0.34.3",
+    "eslint": "^1.9.0",
+    "eslint-config-airbnb": "^1.0.0",
+    "eslint-loader": "^1.1.1",
+    "eslint-plugin-react": "^3.8.0",
+    "webpack": "^1.12.9"
   },
   "dependencies": {
-    "babel": "^5.8.23",
-    "react": "^0.14.0"
+    "history": "^1.13.0",
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "react-redux": "^4.0.0",
+    "react-router": "^1.0.0",
+    "redux": "^3.0.4"
   }
 }
