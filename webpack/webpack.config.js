@@ -4,7 +4,7 @@ const outputPath = path.resolve('', 'build/');
 const config = {
   entry: './src/app.js',
   // devtool: 'source-map',
-  output: { path: __dirname + '/bundle', filename: 'bundle.js' },
+  output: { path: outputPath, filename: 'bundle.js' },
   module: {
     preLoaders: [{
       test: /\.js$|\.jsx$/,

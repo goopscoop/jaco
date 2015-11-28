@@ -4,7 +4,7 @@
   "description": "The best project in the world eva!",
   "main": "main.js",
   "scripts": {
-    "build": "webpack --config webpack/webpack.config.js",
+    "build": "webpack --config webpack/webpack.config.js --watch",
     "dev": "WEBPACK_ENV=dev webpack --config webpack/webpack.config.js --watch",
     "start": "electron ./src/main.js"
   },
