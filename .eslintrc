@@ -1,0 +1,37 @@
+{
+  "extends": "airbnb",
+  "plugins": [
+    "react"
+  ],
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "globals": {
+    "__DEV__": true,
+    "__SERVER__": true,
+    "describe": true,
+    "it": true,
+    "xit": true,
+    "jest": true,
+    "expect": true,
+    "beforeEach": true,
+    "afterEach": true,
+    "AppCenter": true
+  },
+  "ecmaFeatures": {
+    "jsx": true
+  },
+  "rules": {
+    // Strict mode
+    "strict": [2, "never"],
+    "react/jsx-uses-react": 1,
+
+    // Code style
+    "indent": [2, 2],
+    "no-alert": 1,
+    "quotes": [2, "single"],
+    "no-console": 1
+  }
+}
